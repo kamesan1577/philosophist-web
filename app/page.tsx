@@ -1,24 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-
-// 詭弁タイプの日本語マッピング
-const fallacyTypeJapanese = {
-  ad_hominem: '人身攻撃',
-  straw_man: 'わら人形論法',
-  false_dichotomy: '二分法の誤り',
-  slippery_slope: '滑りやすい坂道',
-  appeal_to_authority: '権威への訴え',
-  hasty_generalization: '性急な一般化',
-  circular_reasoning: '循環論法',
-  appeal_to_emotion: '感情への訴え',
-  red_herring: 'レッドヘリング',
-  bandwagon: '便乗論法',
-  false_cause: '偽因の誤謬',
-  appeal_to_tradition: '伝統への訴え',
-  tu_quoque: 'あなたもそうだ論法',
-  no_true_scotsman: '本物のスコットランド人論法'
-};
+import { fallacyTypeJapanese } from './fallacyTypes';
 
 const formatDate = (dateString: string) => {
   try {
@@ -118,7 +101,10 @@ export default function FallacyJudge() {
   return (
     <main className="max-w-4xl mx-auto p-4 min-h-screen">
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h1 className="text-2xl font-bold mb-6">詭弁チェッカー</h1>
+        <h1 className="text-3xl font-bold mb-2">Philosophist</h1>
+        <p className="text-lg mb-6">文章などの矛盾や飛躍を指摘して論破します</p>
+
+        <h2 className="text-2xl font-bold mb-6">詭弁チェッカー</h2>
 
         <div className="space-y-4">
           <div className="space-y-2">
