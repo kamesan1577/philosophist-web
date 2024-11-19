@@ -55,40 +55,13 @@ const escapeHtml = (unsafe: string) => {
 const highlightText = (text: string, fallacyTypes: FallacyType[]) => {
   if (!fallacyTypes || fallacyTypes.length === 0) return escapeHtml(text);
 
-  // 各文字位置に対する詭弁タイプのインデックスを記録
-  const positions: number[][] = new Array(text.length).fill(null).map(() => []);
+  let result = escapeHtml(text);
 
-  fallacyTypes.forEach((fallacy, index) => {
-    const { start, end } = fallacy.text_span;
-    for (let i = start; i < end; i++) {
-      positions[i].push(index);
-    }
+  fallacyTypes.forEach(fallacy => {
+    const escapedRelevantText = escapeHtml(fallacy.relevant_text);
+    const highlightSpan = `<span class="bg-yellow-200 hover:bg-yellow-300 cursor-help" title="${escapeHtml(fallacyTypeJapanese[fallacy.type as keyof typeof fallacyTypeJapanese] || fallacy.type)}: ${escapeHtml(fallacy.explanation)}">${escapedRelevantText}</span>`;
+    result = result.replace(new RegExp(escapedRelevantText, 'g'), highlightSpan);
   });
-
-  // HTMLに変換
-  let result = '';
-  let currentIndexes: number[] = [];
-
-  for (let i = 0; i < text.length; i++) {
-    const newIndexes = positions[i];
-    if (JSON.stringify(newIndexes) !== JSON.stringify(currentIndexes)) {
-      if (currentIndexes.length > 0) {
-        result += '</span>'.repeat(currentIndexes.length);
-      }
-      if (newIndexes.length > 0) {
-        newIndexes.forEach(index => {
-          const fallacy = fallacyTypes[index];
-          result += `<span class="bg-yellow-200 hover:bg-yellow-300 cursor-help" title="${escapeHtml(fallacyTypeJapanese[fallacy.type as keyof typeof fallacyTypeJapanese] || fallacy.type)}: ${escapeHtml(fallacy.explanation)}">`;
-        });
-      }
-      currentIndexes = newIndexes;
-    }
-    result += escapeHtml(text[i]);
-  }
-
-  if (currentIndexes.length > 0) {
-    result += '</span>'.repeat(currentIndexes.length);
-  }
 
   return result;
 };
@@ -181,7 +154,7 @@ export default function FallacyJudge() {
 
       {result && (
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-xl font-bold mb-4">判定結果</h2>
+          <h2 className="text-xl font-bold mb-4">��定結果</h2>
 
           <div className="border rounded-lg p-4 mb-6">
             <div className="flex items-center justify-between">
