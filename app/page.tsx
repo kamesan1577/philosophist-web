@@ -154,7 +154,7 @@ export default function FallacyJudge() {
 
       {result && (
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-xl font-bold mb-4">��定結果</h2>
+          <h2 className="text-xl font-bold mb-4">判定結果</h2>
 
           <div className="border rounded-lg p-4 mb-6">
             <div className="flex items-center justify-between">
