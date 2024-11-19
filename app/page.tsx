@@ -95,7 +95,17 @@ const highlightText = (text: string, fallacyTypes: FallacyType[]) => {
 
 export default function FallacyJudge() {
   const [text, setText] = useState('');
-  const [result, setResult] = useState<any>(null);
+  type ResultType = {
+    is_fallacy: boolean;
+    confidence_score: number;
+    input: string;
+    fallacy_types: FallacyType[];
+    metadata?: {
+      analysis_timestamp?: string;
+    };
+  } | null;
+
+  const [result, setResult] = useState<ResultType>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 

@@ -1,5 +1,4 @@
 // app/api/judge/route.ts
-import { headers } from 'next/headers';
 
 const API_URL = 'https://philosophist.vercel.app/api/v1/judge';
 
