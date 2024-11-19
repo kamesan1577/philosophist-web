@@ -104,7 +104,6 @@ export default function FallacyJudge() {
         <h1 className="text-3xl font-bold mb-2">Philosophist</h1>
         <p className="text-lg mb-6">文章などの矛盾や飛躍を指摘して論破します</p>
 
-        <h2 className="text-2xl font-bold mb-6">詭弁チェッカー</h2>
 
         <div className="space-y-4">
           <div className="space-y-2">
