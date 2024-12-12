@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { fallacyTypeJapanese } from './fallacyTypes';
+import FallacyExplanation from './FallacyExplanation';
+import Link from 'next/link';
 
 const formatDate = (dateString: string) => {
   try {
@@ -42,7 +44,7 @@ const highlightText = (text: string, fallacyTypes: FallacyType[]) => {
 
   fallacyTypes.forEach(fallacy => {
     const escapedRelevantText = escapeHtml(fallacy.relevant_text);
-    const highlightSpan = `<span class="bg-yellow-200 hover:bg-yellow-300 cursor-help" title="${escapeHtml(fallacyTypeJapanese[fallacy.type as keyof typeof fallacyTypeJapanese] || fallacy.type)}: ${escapeHtml(fallacy.explanation)}">${escapedRelevantText}</span>`;
+    const highlightSpan = `<span class="bg-yellow-200 hover:bg-yellow-300 cursor-help" title="${escapeHtml(fallacyTypeJapanese[fallacy.type as keyof typeof fallacyTypeJapanese].name || fallacy.type)}: ${escapeHtml(fallacyTypeJapanese[fallacy.type as keyof typeof fallacyTypeJapanese].explanation)}">${escapedRelevantText}</span>`;
     result = result.replace(new RegExp(escapedRelevantText, 'g'), highlightSpan);
   });
 
@@ -92,7 +94,7 @@ export default function FallacyJudge() {
 
       setResult(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'エラーが発生しました。もう一度お試しください。');
+      setError(err instanceof Error ? err.message : 'エラーが発生しました。��う一度お試しください。');
     } finally {
       setLoading(false);
     }
@@ -103,7 +105,11 @@ export default function FallacyJudge() {
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
         <h1 className="text-3xl font-bold mb-2">Philosophist</h1>
         <p className="text-lg mb-6">文章などの矛盾や飛躍を指摘して論破します</p>
-
+        <Link href="/fallacies" legacyBehavior>
+          <a className="inline-block bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">
+            誤謬の一覧を見る
+          </a>
+        </Link>
 
         <div className="space-y-4">
           <div className="space-y-2">
@@ -175,14 +181,16 @@ export default function FallacyJudge() {
                 <div key={index} className={`border rounded-lg p-4 ${result.is_fallacy ? 'bg-red-50' : ''}`}>
                   <div className="flex justify-between items-start mb-2">
                     <h4 className="font-bold">
-                      {fallacyTypeJapanese[fallacy.type as keyof typeof fallacyTypeJapanese] || fallacy.type}
+                      {fallacyTypeJapanese[fallacy.type as keyof typeof fallacyTypeJapanese]?.name || fallacy.type}
                     </h4>
+
                     <span className="text-sm text-gray-600">
                       確信度: {(fallacy.confidence * 100).toFixed(1)}%
                     </span>
                   </div>
                   {fallacy.relevant_text}
                   <p className="text-gray-700 mb-3">{fallacy.explanation}</p>
+                  <FallacyExplanation type={fallacy.type} />
                 </div>
               ))}
             </div>
