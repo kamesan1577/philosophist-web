@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { fallacyTypeJapanese } from './fallacyTypes';
 import FallacyExplanation from './FallacyExplanation';
-import Link from 'next/link';
 
 const formatDate = (dateString: string) => {
   try {
