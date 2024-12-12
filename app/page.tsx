@@ -1,15 +1,18 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { fallacyTypeJapanese } from './fallacyTypes';
 import FallacyExplanation from './FallacyExplanation';
 import Link from 'next/link';
 
 const formatDate = (dateString: string) => {
   try {
-    return new Date(dateString).toISOString().replace('T', ' ').substring(0, 19);
+    return new Date(dateString)
+      .toISOString()
+      .replace("T", " ")
+      .substring(0, 19);
   } catch {
-    return '不明';
+    return "不明";
   }
 };
 
@@ -42,7 +45,7 @@ const highlightText = (text: string, fallacyTypes: FallacyType[]) => {
 
   let result = escapeHtml(text);
 
-  fallacyTypes.forEach(fallacy => {
+  fallacyTypes.forEach((fallacy) => {
     const escapedRelevantText = escapeHtml(fallacy.relevant_text);
     const highlightSpan = `<span class="bg-yellow-200 hover:bg-yellow-300 cursor-help" title="${escapeHtml(fallacyTypeJapanese[fallacy.type as keyof typeof fallacyTypeJapanese].name || fallacy.type)}: ${escapeHtml(fallacyTypeJapanese[fallacy.type as keyof typeof fallacyTypeJapanese].explanation)}">${escapedRelevantText}</span>`;
     result = result.replace(new RegExp(escapedRelevantText, 'g'), highlightSpan);
@@ -52,7 +55,7 @@ const highlightText = (text: string, fallacyTypes: FallacyType[]) => {
 };
 
 export default function FallacyJudge() {
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
   type ResultType = {
     is_fallacy: boolean;
     confidence_score: number;
@@ -65,26 +68,35 @@ export default function FallacyJudge() {
 
   const [result, setResult] = useState<ResultType>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
-  const handleSubmit = async () => {
-    if (!text.trim()) return;
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const inputText = urlParams.get("input");
+    if (inputText) {
+      setText(inputText);
+      handleSubmit(inputText);
+    }
+  }, []);
+
+  const handleSubmit = async (inputText = text) => {
+    if (!inputText.trim()) return;
 
     setLoading(true);
-    setError('');
+    setError("");
     setResult(null);
 
     try {
-      const response = await fetch('/api/judge', {
-        method: 'POST',
+      const response = await fetch("/api/judge", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text, language: 'ja' }),
+        body: JSON.stringify({ text: inputText, language: "ja" }),
       });
 
       if (!response.ok) {
-        throw new Error('APIリクエストに失敗しました');
+        throw new Error("APIリクエストに失敗しました");
       }
 
       const data = await response.json();
@@ -119,20 +131,18 @@ export default function FallacyJudge() {
               placeholder="判定したいテキストを入力してください（例：彼の意見は信用できない。なぜなら彼は若すぎるからだ。）"
               className="w-full min-h-[120px] p-3 border rounded-md"
             />
-            <p className="text-sm text-gray-500">
-              {text.length}/1000文字
-            </p>
+            <p className="text-sm text-gray-500">{text.length}/1000文字</p>
           </div>
 
           <button
-            onClick={handleSubmit}
+            onClick={() => handleSubmit()}
             disabled={loading || !text.trim()}
             className={`w-full py-2 px-4 rounded-md text-white ${loading || !text.trim()
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-blue-600 hover:bg-blue-700'
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700"
               }`}
           >
-            {loading ? '判定中...' : '判定する'}
+            {loading ? "判定中..." : "判定する"}
           </button>
 
           {error && (
@@ -150,8 +160,13 @@ export default function FallacyJudge() {
           <div className="border rounded-lg p-4 mb-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className={`text-lg font-semibold ${result.is_fallacy ? 'text-red-600' : ''}`}>
-                  {result.is_fallacy ? '⚠️ 詭弁の可能性があります' : '✅ 詭弁の可能性は低いです'}
+                <p
+                  className={`text-lg font-semibold ${result.is_fallacy ? "text-red-600" : ""
+                    }`}
+                >
+                  {result.is_fallacy
+                    ? "⚠️ 詭弁の可能性があります"
+                    : "✅ 詭弁の可能性は低いです"}
                 </p>
                 <p className="text-sm text-gray-600">
                   確信度: {(result.confidence_score * 100).toFixed(1)}%
@@ -169,7 +184,7 @@ export default function FallacyJudge() {
             <p
               className="leading-relaxed"
               dangerouslySetInnerHTML={{
-                __html: highlightText(result.input, result.fallacy_types)
+                __html: highlightText(result.input, result.fallacy_types),
               }}
             />
           </div>
@@ -197,10 +212,10 @@ export default function FallacyJudge() {
           )}
 
           <div className="text-sm text-gray-500 mt-4">
-            分析時刻: {result.metadata?.analysis_timestamp ?
-              formatDate(result.metadata.analysis_timestamp) :
-              '不明'
-            }
+            分析時刻:{" "}
+            {result.metadata?.analysis_timestamp
+              ? formatDate(result.metadata.analysis_timestamp)
+              : "不明"}
           </div>
         </div>
       )}
