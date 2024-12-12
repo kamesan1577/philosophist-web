@@ -106,7 +106,7 @@ export default function FallacyJudge() {
 
       setResult(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'エラーが発生しました。��う一度お試しください。');
+      setError(err instanceof Error ? err.message : 'エラーが発生しました。もう一度お試しください。');
     } finally {
       setLoading(false);
     }
@@ -115,13 +115,8 @@ export default function FallacyJudge() {
   return (
     <main className="max-w-4xl mx-auto p-4 min-h-screen">
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h1 className="text-3xl font-bold mb-2">Philosophist</h1>
+        <h1 className="text-3xl font-bold mb-2">詭弁チェッカー</h1>
         <p className="text-lg mb-6">文章などの矛盾や飛躍を指摘して論破します</p>
-        <Link href="/fallacies" legacyBehavior>
-          <a className="inline-block bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">
-            誤謬の一覧を見る
-          </a>
-        </Link>
 
         <div className="space-y-4">
           <div className="space-y-2">
